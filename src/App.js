@@ -2,7 +2,12 @@ import logo from './logo.svg';
 import './App.css';
 import Home from "./pages/Home"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
+import { Routes, Route } from "react-router-dom"
+import { Album } from "./pages/Album"
+import Navbar from './components/navbar/Navbar';
+import { NowPlaying } from './components/nowplaying/NowPlaying';
+import { CurrentSongContext } from './components/contexts/ContextForCurrentSong';
+import { useState } from 'react';
 
 // Define custom theme
 const theme = createTheme({
@@ -19,8 +24,8 @@ const theme = createTheme({
       100: '#C1ECC2',
       50: '#E6F7E5'
     },
-    secondary:{
-      main:'#FFFFFF',
+    secondary: {
+      main: '#FFFFFF',
     },
     customBlack: {
       main: '#121212',
@@ -30,15 +35,40 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: 
-      '"Poppins"'
+    fontFamily: '"Poppins"',
+    body1: {
+      fontSize: '0.9rem',
+      '@media (min-width:800px)': {
+        fontSize: '1rem'
+      }
+    },
+    caption: {
+      fontSize: '0.7rem',
+      '@media (min-width:800px)': {
+        fontSize: '0.8rem'
+      }
+    }
   },
 });
 
 function App() {
+  //for context
+  const [currentSong, setCurrentSong] = useState({
+    image: "https://images.pexels.com/photos/3464632/pexels-photo-3464632.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+    songTitle: "Love Hangover",
+    albumTitle:"Motherly Highlight",
+  });
   return <>
     <ThemeProvider theme={theme}>
-      <Home />
+      <CurrentSongContext.Provider value={{currentSong, setCurrentSong}}>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/album/:albumid" element={<Album />} />
+        </Routes>
+        <div style={{ backgroundColor: "white", height: '1px' }}><br /></div>
+        <NowPlaying />
+      </CurrentSongContext.Provider>
     </ThemeProvider>
   </>
 }

@@ -2,13 +2,18 @@ import Navbar from "../components/navbar/Navbar";
 import { Hero } from "../components/hero/Hero";
 import { Section } from "../components/section/Section";
 import { useTheme } from "@emotion/react";
+import Box from "@mui/material/Box";
 import { FAQ } from "../components/faq/FAQ";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Searchbar } from "../components/navbar/Searchbar";
+import { Hidden } from '@mui/material';
+import { GreenLine } from "../components/greenline/GreenLine";
 
 const Home = () => {
     const [tAlbums, setTAlbums] = useState();
     const [nAlbums, setNAlbums] = useState();
+    const [combinedAlbums, setCombinedAlbums] = useState([]);
     const [songs, setSongs] = useState();
     useEffect(() => {
         const getTopAlbumData = async () => {
@@ -30,6 +35,9 @@ const Home = () => {
             } catch (e) {
                 console.log(e.response);
             }
+            if (tAlbums && nAlbums) {
+                setCombinedAlbums({ ...tAlbums, ...nAlbums });
+            }
         }
         const getSongData = async () => {
             try {
@@ -46,19 +54,18 @@ const Home = () => {
     }, [])
     const theme = useTheme();
     return <>
-        <Navbar />
+        <Hidden mdUp>
+            <Box sx={{ width: '100vw' }}>
+                <Searchbar data={combinedAlbums}/>
+            </Box>
+        </Hidden>
         <Hero />
-        {/* top album */}
         <Section sectionName="Top Albums" data={tAlbums} />
-
-        {/* new album */}
         <Section sectionName="New Albums" data={nAlbums} />
-
-        {/* songs */}
-        <div style={{ backgroundColor: theme.palette.primary[400], height: '1px' }}><br /></div>
+        <GreenLine />
         <Section sectionName="Songs" data={songs} isSongsSection={true} />
-        <div style={{ backgroundColor: theme.palette.primary[400], height: '1px' }}><br /></div>
-        {/* <FAQ /> */}
+        <GreenLine />
+        <FAQ />
     </>
 }
 
